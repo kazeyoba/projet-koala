@@ -1,0 +1,32 @@
+---
+- name: Install nfs server
+  apt:
+    name: nfs-kernel-server
+    state: latest
+
+- name: Create directory /srv/nfs
+  file:
+    path: /srv/nfs
+    state: directory
+    mode: '0755'
+
+- name: Export directory to subnet front / back
+  lineinfile:
+    path: /etc/exports
+    regex: '^/srv/nfs.*$'
+    line: '/srv/nfs 10.10.60.0/23(rw,sync,no_subtree_check,no_root_squash,anonuid=33,anongid=33)'
+
+- name: Export filesystems
+  command: exportfs -a
+
+- name: Check Kanboard directory existence
+  stat:
+    path: /srv/nfs/kanboard
+  register: kanboardinstall
+
+- name: Download Kanboard archive
+  unarchive:
+    src: https://github.com/kanboard/kanboard/archive/refs/tags/v1.2.34.tar.gz
+    dest: /srv/nfs/
+    remote_src: yes
+  when: not kanboardinstall.stat.exists
