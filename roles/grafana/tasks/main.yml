@@ -15,7 +15,7 @@
 - name: Ajout de la cle GPG Grafana
   apt_key:
     url: https://apt.grafana.com/gpg.key
-    stage: present
+    state: present
 
 - name: Ajout du depot Grafana
   ansible.builtin.apt_repository:
