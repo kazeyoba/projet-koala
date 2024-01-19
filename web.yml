@@ -1,0 +1,11 @@
+- hosts: web
+  gather_facts: yes
+  become: yes
+  roles:
+    - role: web
+
+- hosts: nfs
+  gather_facts: yes
+  become: yes
+  roles:
+    - role: nfs
