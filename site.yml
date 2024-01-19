@@ -4,3 +4,69 @@
   become: yes
   roles:
     - role: all
+
+- hosts: proxy
+  gather_facts: yes
+  become: yes
+  roles:
+    - role: proxy
+
+- hosts: keepalived_master
+  gather_facts: yes
+  become: yes
+  roles:
+    - role: keepalived/master
+
+- hosts: keepalived_backup
+  gather_facts: yes
+  become: yes
+  roles:
+    - role: keepalived/backup
+
+- hosts: web
+  gather_facts: yes
+  become: yes
+  roles:
+    - role: web
+
+- hosts: nfs
+  gather_facts: yes
+  become: yes
+  roles:
+    - role: nfs
+
+- hosts: bdd
+  gather_facts: yes
+  become: yes
+  roles:
+    - role: bdd
+
+- hosts: galera_master
+  gather_facts: yes
+  become: yes
+  roles:
+    - role: galera/master
+
+- hosts: galera_replica
+  gather_facts: yes
+  become: yes
+  roles:
+    - role: galera/replica
+
+- hosts: loki
+  gather_facts: yes
+  become: yes
+  roles:
+    - role: loki
+  
+- hosts: grafana
+  gather_facts: yes
+  become: yes
+  roles:
+    - role: grafana
+
+- hosts: all
+  gather_facts: yes
+  become: yes
+  roles:
+    - role: promtail
