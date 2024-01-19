@@ -56,6 +56,6 @@
 
 - name: Activation et lancement Promtail
   systemd:
-    name: loki
+    name: promtail
     state: started
     enabled: yes
