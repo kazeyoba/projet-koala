@@ -31,7 +31,7 @@
 
 - name: Copie de la configuration promtail.yml
   template:
-    src: "{{ item.src }}"
+    src: "roles/promtail/templates/promtail.yml.j2"
     dest: '/etc/promtail/promtail.yml'
   when: check_promtail.stat.exists == False
 
