@@ -24,9 +24,9 @@
     path: /etc/loki
     state: directory
 
-- name: Creation dossier /var/lib/lok
+- name: Creation dossier /var/lib/loki
   ansible.builtin.file:
-    path: /var/lib/lok
+    path: /var/lib/loki
     state: directory
 
 - name: Verification si configuration loki.yml existe
