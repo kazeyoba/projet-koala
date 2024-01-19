@@ -54,7 +54,12 @@
   systemd:
     daemon_reload: yes
 
-- name: Activation et lancement Promtail
+- name: Lancement Promtail
   systemd:
     name: promtail
     state: started
+
+- name: Activation Promtail
+  systemd:
+    name: promtail
+    enabled: yes

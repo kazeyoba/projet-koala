@@ -61,8 +61,13 @@
   systemd:
     daemon_reload: yes
 
-- name: Activation et lancement Loki
+- name: Lancement Loki
   systemd:
     name: loki
     state: started
+
+- name: Activation de loki.service
+  systemd:
+    name: loki
+    enabled: yes
 
