@@ -1,5 +1,5 @@
 ---
-- name: Installation prre-requis pour grafana-server
+- name: Installation pre-requis pour grafana-server
   apt:
     update_cache: yes
     pkg:
@@ -35,4 +35,3 @@
     name: grafana-server
     state: started
     enabled: yes
-  when: ansible_facts.services['grafana-server.service'] is defined and ansible_facts.services['grafana-server.service'].state != 'running'

@@ -4,7 +4,7 @@
     name:
       - unzip
     state: present
-    
+
 - name: Telecharger Loki
   get_url:
     url: "https://github.com/grafana/loki/releases/download/v2.8.7/loki-linux-amd64.zip"
@@ -66,5 +66,4 @@
     name: loki
     state: started
     enabled: yes
-  when: ansible_facts.services['loki.service'] is defined and ansible_facts.services['loki.service'].state != 'running'
 
