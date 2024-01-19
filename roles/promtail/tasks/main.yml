@@ -46,7 +46,7 @@
 
 - name: Copie de la configuration systemd
   template:
-    src: roles/loki/templates/promtail.service
+    src: roles/promtail/templates/promtail.service
     dest: /etc/systemd/system/promtail.service
   when: check_promtail_systemd.stat.exists == False
 
@@ -59,4 +59,3 @@
     name: loki
     state: started
     enabled: yes
-  when: ansible_facts.services['promtail.service'] is defined and ansible_facts.services['promtail.service'].state != 'running'
