@@ -33,4 +33,3 @@
   systemd:
     name: grafana-server
     state: started
-    enabled: yes

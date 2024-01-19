@@ -58,4 +58,3 @@
   systemd:
     name: promtail
     state: started
-    enabled: yes
