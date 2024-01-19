@@ -21,7 +21,7 @@
 
 - name: Ajout du depot Grafana
   ansible.builtin.apt_repository:
-    filename: example-repo
+    filename: grafana
     repo: 'deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main'
 
 - name: Installation Grafana OSS
