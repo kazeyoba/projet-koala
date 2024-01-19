@@ -34,10 +34,6 @@
     src: "{{ item.src }}"
     dest: '/etc/promtail/promtail.yml'
   when: check_promtail.stat.exists == False
-  loop:
-    - { src: 'roles/promtail/templates/promtail.yml.j2', condition: "'proxy' not in group_names and 'web' not in group_names" }
-    - { src: 'roles/promtail/templates/promtail-apache.yml.j2', condition: "'web' in group_names" }
-    - { src: 'roles/promtail/templates/promtail-haproxy.yml.j2', condition: "'proxy' in group_names" }
 
 - name: Verification si une configuration systemd promtail.service existe
   stat:

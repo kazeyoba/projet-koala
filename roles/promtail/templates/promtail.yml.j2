@@ -19,3 +19,53 @@ scrape_configs:
     relabel_configs:
       - source_labels: ['__journal__systemd_unit']
         target_label: 'unit'
+{% if 'web' in group_names %}
+  - job_name: apache
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: apache
+          __path__: /var/log/apache2/*.log
+          host: "{{ inventory_hostname }}"
+    pipeline_stages:
+      - match:
+          selector: '{job="apache"}'
+          stages:
+            - regex:
+                expression: '^(?P<client_ip>[^ ]*) - - \[(?P<timestamp>[^\]]*)\] "(?P<request_method>[A-Z]+) (?P<request_path>[^"]+) HTTP/(?P<http_version>[0-9.]+)" (?P<response_code>\d+) (?P<response_size>\d+) "(?P<referrer>[^"]*)" "(?P<user_agent>[^"]*)"$'
+            - labels:
+                client_ip:
+                request_method:
+                request_path:
+                http_version:
+                response_code:
+                response_size:
+                referrer:
+                user_agent:
+{% endif %}
+{% if 'proxy' in group_names %}
+  - job_name: haproxy
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: haproxy
+          __path__: /var/log/haproxy/haproxy.log
+          host: "{{ inventory_hostname }}"
+    pipeline_stages:
+      - match:
+          selector: '{job="haproxy"}'
+          stages:
+            - regex:
+                expression: '^(?P<client_ip>[^ ]*) - - \[(?P<timestamp>[^\]]*)\] "(?P<request_method>[A-Z]+) (?P<request_path>[^"]+) HTTP/(?P<http_version>[0-9.]+)" (?P<response_code>\d+) (?P<response_size>\d+) "(?P<referrer>[^"]*)" "(?P<user_agent>[^"]*)"$'
+            - labels:
+                client_ip:
+                request_method:
+                request_path:
+                http_version:
+                response_code:
+                response_size:
+                referrer:
+                user_agent:
+{% endif %}
