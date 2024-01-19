@@ -12,16 +12,14 @@
     path: /etc/apt/keyrings/
     state: directory
 
-- name: Telechargement de la cle GPG Grafana
-  ansible.builtin.get_url:
+- name: Ajout de la cle GPG Grafana
+  apt_key:
     url: https://apt.grafana.com/gpg.key
-    dest: /etc/apt/keyrings/grafana.gpg
-    mode: '0644'
-    force: true
+    stage: present
 
 - name: Ajout du depot Grafana
   ansible.builtin.apt_repository:
-    repo: 'deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main'
+    repo: 'deb https://apt.grafana.com stable main'
     state: present
     update_cache: yes
 
