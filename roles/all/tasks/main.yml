@@ -1,0 +1,26 @@
+---
+- name: Add my ssh key
+  authorized_key:
+    user: cloud
+    state: present
+    key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCl9XR5SgQXbK6kzbe53HVvxCw4c26hWsxC28kzGpMewSCPE64TUVa2UyXcgdiNQOHYuyCBSllk0sblp+iPKpf4t2vvzilS0nowoCU6XWqanLiakGjUgro0xjwdAMWNaIARKnOl4QoIuWLxs0duGhK+z63AQMi33QuG8VbCV2vD5KRhunsM2bN3MK1H6IpeBeteScMxnvk5EasG7VTesCIzsbYqj5RWJ+7MJEHonOUm798/5lHblHPG7+dVTJm06OrjleL0TQZSxhkIy7V7Ho28JHqDaZsZKwyVNUtdaVhOxBHMUjwnDQ4gJAA98pIoFZDuBe31SoXkeb21Hi9Q8GnB cloud@bastion-ans"
+
+- name: Configure SSHd disable PasswordAuthentication
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^#PasswordAuthentication yes"
+    line: "PasswordAuthentication no"
+
+- name: Vérifier si la ligne existe déjà dans le fichier sudoers
+  shell: "grep -q 'cloud ALL=(ALL) NOPASSWD:ALL' /etc/sudoers"
+  ignore_errors: yes
+  register: grep_result
+
+- name: Ajouter la ligne au fichier sudoers si elle n'existe pas
+  lineinfile:
+    path: /etc/sudoers
+    line: 'cloud ALL=(ALL) NOPASSWD:ALL'
+  when: grep_result.rc != 0
+
+- name: restart SSHD
+  command: systemctl restart sshd
