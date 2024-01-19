@@ -1,4 +1,10 @@
 ---
+- name: Installation unzip
+  ansible.builtin.package:
+    name:
+      - unzip
+    state: present
+    
 - name: Telecharger Loki
   get_url:
     url: "https://github.com/grafana/loki/releases/download/v2.8.7/loki-linux-amd64.zip"
