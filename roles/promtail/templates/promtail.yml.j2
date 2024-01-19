@@ -13,9 +13,9 @@ scrape_configs:
     journal:
       max_age: 1h
       path: /var/log/journal
-    labels:
-      job: systemd
-      host: "{{ inventory_hostname }}"
+      labels:
+        job: systemd
+        host: "{{ inventory_hostname }}"
     relabel_configs:
       - source_labels: ['__journal__systemd_unit']
         target_label: 'unit'
