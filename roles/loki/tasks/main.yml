@@ -1,0 +1,64 @@
+---
+- name: Telecharger Loki
+  get_url:
+    url: "https://github.com/grafana/loki/releases/download/v2.8.7/loki-linux-amd64.zip"
+    dest: /tmp/loki-linux-amd64.zip
+  register: download
+
+- name: Telecharge & decompresse loki-linux-amd64.zip
+  ansible.builtin.unarchive:
+    src: https://github.com/grafana/loki/releases/download/v2.8.7/loki-linux-amd64.zip
+    dest: /usr/local/bin/
+    remote_src: yes
+
+- name: Ajout droit +x sur /usr/local/bin/loki-linux-amd64
+  file:
+    path: /usr/local/bin/loki-linux-amd64
+    state: file
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Creation dossier /etc/loki
+  ansible.builtin.file:
+    path: /etc/loki
+    state: directory
+
+- name: Creation dossier /var/lib/lok
+  ansible.builtin.file:
+    path: /var/lib/lok
+    state: directory
+
+- name: Verification si configuration loki.yml existe
+  stat:
+    path: '/etc/loki/loki.yml'
+  register: check_loki
+
+- name: Copie de la confiuration loki.yml
+  template:
+    src: roles/loki/templates/loki.yml
+    dest: /etc/loki/loki.yml
+  when: check_loki.stat.exists == False
+
+- name: Verification si configuration si une configuration systemd loki.service existe
+  stat:
+    path: '/etc/systemd/system/loki.service'
+  register: check_loki_systemd
+
+- name: Copie de la configuration systemd
+  template:
+    src: roles/loki/templates/loki.service
+    dest: /etc/systemd/system/loki.service
+  when: check_loki_systemd.stat.exists == False
+
+- name: Recharge systemd daemons
+  systemd:
+    daemon_reload: yes
+
+- name: Activation et lancement Loki
+  systemd:
+    name: loki
+    state: started
+    enabled: yes
+  when: ansible_facts.services['loki.service'] is defined and ansible_facts.services['loki.service'].state != 'running'
+
