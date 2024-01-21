@@ -1,0 +1,13 @@
+---
+- name: Install Keepalived
+  apt:
+    name: keepalived
+    state: latest
+- name: Copy keepalived backup configuration
+  template:
+    src: roles/keepalived/templates/keepalived_backup.conf
+    dest: /etc/keepalived/keepalived.conf
+- name: restart keepalived
+  systemd:
+    name: keepalived.service
+    state: restarted

@@ -1,0 +1,30 @@
+---
+- name: make non local bind
+  sysctl:
+    name: net.ipv4.ip_nonlocal_bind
+    value: "1"
+    state: present
+    reload: yes
+
+- name: install haproxy
+  apt:
+    name: haproxy
+    update_cache: yes
+    state: latest
+
+- name: install hatop
+  apt:
+    name: hatop
+    update_cache: yes
+    state: latest
+
+- name: Copy haproxy configuration file
+  template:
+    src: roles/proxy/templates/haproxy.cfg
+    dest: /etc/haproxy/haproxy.cfg
+
+- name: Reload haproxy
+  systemd:
+    name: haproxy.service
+    state: reloaded
+
