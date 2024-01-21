@@ -1,14 +1,35 @@
 ---
-- name: Install nfs server
+- name: Install nfs server and LVM packages
   apt:
-    name: nfs-kernel-server
-    state: latest
+    name: nfs-kernel-server lvm2
+    state: latest 
+
+- name: Create physical volume
+  command: pvcreate /dev/sdb
+
+- name: Create volume group
+  command: vgcreate vg_nfs /dev/sdb
+
+- name: Create logical volume
+  command: lvcreate -l 100%FREE -n lv_nfs vg_nfs
+
+- name: Create filesystem on logical volume
+  filesystem:
+    fstype: ext4
+    dev: /dev/vg_nfs/lv_nfs
 
 - name: Create directory /srv/nfs
   file:
     path: /srv/nfs
     state: directory
     mode: '0755'
+
+- name: Mount logical volume in /srv/nfs
+  mount:
+    path: /srv/nfs
+    src: /dev/vg_nfs/lv_nfs
+    fstype: ext4
+    state: mounted
 
 - name: Export directory to subnet front / back
   lineinfile:
