@@ -5,12 +5,6 @@
   roles:
     - role: all
 
-- hosts: proxy
-  gather_facts: yes
-  become: yes
-  roles:
-    - role: proxy
-
 - hosts: keepalived_master
   gather_facts: yes
   become: yes
@@ -22,6 +16,12 @@
   become: yes
   roles:
     - role: keepalived/backup
+
+- hosts: proxy
+  gather_facts: yes
+  become: yes
+  roles:
+    - role: proxy
 
 - hosts: web
   gather_facts: yes
