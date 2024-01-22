@@ -1,0 +1,74 @@
+---
+- name: Install apache2 and php dependencies
+  apt:
+    update_cache: yes
+    pkg:
+      - apache2
+      - libapache2-mod-php
+      - php
+      - php7.4-mysql
+      - php7.4-gd
+      - php7.4-imagick
+      - nfs-common
+    state: latest
+
+- name: Restart apache2
+  systemd:
+    name: apache2.service
+    state: restarted
+
+- name: Add /var/www/nfs path
+  file:
+    path: /var/www/nfs
+    state: directory
+    mode: '0755'
+    owner: www-data
+    group: www-data
+
+- name: Add nfs mount
+  lineinfile:
+    path: /etc/fstab
+    regexp: '^.*/srv/nfs.*$'
+    line: '10.10.61.20:/srv/nfs /var/www/nfs nfs noatime,nodiratime 0 0'
+    state: present
+
+- name: Mount nfs share
+  command: mount -a
+
+- name: Chown export to www-data:www-data
+  command: chown -R www-data:www-data /var/www/nfs
+
+- name: Check if default vhost is disable
+  stat:
+    path: '/etc/apache2/sites-enabled/000-default.conf'
+  register: check_defaultvhost
+
+- name: Disable default apache2 site
+  command: a2dissite 000-default
+  when: check_defaultvhost.stat.exists == True
+
+- name: Check if kanboard vhost exist
+  stat:
+    path: '/etc/apache2/sites-available/kanboard.conf'
+  register: check_vhostkanboard
+
+- name: Copy vhost
+  template:
+    src: roles/web/templates/kanboard.conf
+    dest: /etc/apache2/sites-available/kanboard.conf
+  when: check_vhostkanboard.stat.exists == False
+
+- name: Check if kanboard vhost link exists
+  stat:
+    path: '/etc/apache2/sites-enabled/kanboard.conf'
+  register: check_linkkanboard
+
+- name: Enable kanboard apache2 site
+  command: a2ensite kanboard
+  when: check_linkkanboard.stat.exists == False
+
+- name: Restart apache2
+  systemd:
+    name: apache2.service
+    state: restarted
+  when: check_linkkanboard.stat.exists == False
