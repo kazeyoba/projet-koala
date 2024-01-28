@@ -27,7 +27,7 @@ wsrep_cluster_name="b3cluster"
 # On renseignera ensuite les IPs des membres
 # du cluster. Mais pour l'init du cluster
 # on laisse "gcomm://" vide
-wsrep_cluster_address="gcomm://10.10.61.10,10.10.61.11"
+wsrep_cluster_address="gcomm://"
 wsrep_sst_auth=sst_backup:supermotdepasse
 wsrep_sst_method=rsync
 wsrep_on=ON
