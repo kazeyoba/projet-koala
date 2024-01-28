@@ -35,7 +35,7 @@
   lineinfile:
     path: /etc/exports
     regex: '^/srv/nfs.*$'
-    line: '/srv/nfs 10.10.60.0/23(rw,sync,no_subtree_check,no_root_squash,anonuid=33,anongid=33)'
+    line: '/srv/nfs 10.10.60.0/24(rw,sync,no_subtree_check,no_root_squash,anonuid=33,anongid=33)'
 
 - name: Export filesystems
   command: exportfs -a
