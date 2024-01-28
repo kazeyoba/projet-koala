@@ -5,10 +5,12 @@
     pkg:
       - apache2
       - libapache2-mod-php
-      - php
-      - php7.4-mysql
-      - php7.4-gd
-      - php7.4-imagick
+      - php8.2
+      - php8.2-mysql
+      - php8.2-gd
+      - php8.2-mbstring
+      - php8.2-imagick
+      - php8.2-xml
       - nfs-common
     state: latest
 
