@@ -1,9 +1,3 @@
-- hosts: bdd
-  gather_facts: yes
-  become: yes
-  roles:
-    - role: bdd
-
 - hosts: galera_master
   gather_facts: yes
   become: yes

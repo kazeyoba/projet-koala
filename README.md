@@ -13,3 +13,9 @@ ansible-playbook -i inventory/hosts.ini -k site.yml
 ### Test role: Loki + Promtail + Grafana
 
 **VALIDER SUR INFRA**
+
+### Test role: NFS + Web
+
+**VALIDER SUR INFRA** : Installation uniquement
+
+### Test role: BDD + Galera

@@ -1,0 +1,40 @@
+---
+- name: Install MariaDB & dependances
+  apt:
+    pkg:
+      - mariadb-server
+      - mariadb-client
+      - python3-pip
+      - pkg-config
+      - libmariadb-dev
+    state: latest
+    update_cache: yes
+
+- name: Install mysclient client for Python 3.X
+  shell: pip3 install mysqlclient --break-system-packages
+
+- name: modify mariadb configuration file
+  lineinfile:
+    path: /etc/mysql/mariadb.conf.d/50-server.cnf
+    regexp: "^bind-address.*$"
+    line: 'bind-address = 0.0.0.0'
+  register: mariaconf
+
+- name: restart mariadb
+  systemd:
+    name: mariadb.service
+    state: restarted
+  when: mariaconf.changed
+
+- name: Créer une base de données et un utilisateur
+  mysql_db:
+    name: "kanboard"
+    state: present
+
+- name: Créer un utilisateur et accorder des privilèges
+  mysql_user:
+    name: "kanboard"
+    host: "%"
+    password: "kanboard"
+    priv: "kanboard.*:ALL"
+    state: present
