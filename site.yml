@@ -23,7 +23,7 @@
   roles:
     - role: keepalived/backup
   
-  - hosts: nfs
+- hosts: nfs
   gather_facts: yes
   become: yes
   roles:
