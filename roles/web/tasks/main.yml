@@ -69,6 +69,17 @@
   command: a2ensite kanboard
   when: check_linkkanboard.stat.exists == False
 
+- name: Check if kanboard config.php exists
+  stat:
+    path: '/var/www/nfs/kanboard-1.2.34/config.php'
+  register: check_configkanboard
+
+- name: Copy config.php
+  template:
+    src: roles/web/templates/config.php
+    dest: /var/www/nfs/kanboard-1.2.34/config.php
+  when: check_configkanboard.stat.exists == False
+
 - name: Restart apache2
   systemd:
     name: apache2.service
