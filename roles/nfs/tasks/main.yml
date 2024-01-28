@@ -1,8 +1,11 @@
 ---
 - name: Install nfs server and LVM packages
   apt:
-    name: nfs-kernel-server lvm2
-    state: latest 
+    update_cache: yes
+    pkg:
+      - nfs-kernel-server
+      - lvm2
+    state: latest
 
 - name: Create physical volume
   command: pvcreate /dev/sdb
