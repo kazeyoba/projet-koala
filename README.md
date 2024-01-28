@@ -19,3 +19,5 @@ ansible-playbook -i inventory/hosts.ini -k site.yml
 **VALIDER SUR INFRA** : Installation uniquement
 
 ### Test role: BDD + Galera
+
+**BDD VALIDER SUR INFRA**
