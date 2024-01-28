@@ -1,7 +1,7 @@
 ---
 - name: Copy Galera bootstrap configuration file
   template:
-    src: roles/galera/templates/galera_replicas.cnf
+    src: roles/galera/templates/galera_replica.cnf
     dest: /etc/mysql/conf.d/galera.cnf
   register: galeracnf
 - name: Restart mariadb
