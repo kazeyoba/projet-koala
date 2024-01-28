@@ -4,7 +4,7 @@
     update_cache: yes
     pkg:
       - apache2
-      - libapache2-mod-php
+      - libapache2-mod-php8.2
       - php8.2
       - php8.2-mysql
       - php8.2-gd
