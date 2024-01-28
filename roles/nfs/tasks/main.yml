@@ -7,25 +7,35 @@
       - lvm2
     state: latest
 
+- name: Check if /dev/sdb is initialized
+  command: pvdisplay /dev/sdb
+  register: pvdisplay_output
+  ignore_errors: yes
+
 - name: Create physical volume
   command: pvcreate /dev/sdb
+  when: "pvdisplay_output.rc != 0"
 
 - name: Create volume group
   command: vgcreate vg_nfs /dev/sdb
+  when: "pvdisplay_output.rc != 0"
 
 - name: Create logical volume
   command: lvcreate -l 100%FREE -n lv_nfs vg_nfs
+  when: "pvdisplay_output.rc != 0"
 
 - name: Create filesystem on logical volume
   filesystem:
     fstype: ext4
     dev: /dev/vg_nfs/lv_nfs
+  when: "pvdisplay_output.rc != 0"
 
 - name: Create directory /srv/nfs
   file:
     path: /srv/nfs
     state: directory
     mode: '0755'
+  when: "pvdisplay_output.rc != 0"
 
 - name: Mount logical volume in /srv/nfs
   mount:
