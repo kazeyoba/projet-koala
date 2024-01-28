@@ -1,9 +1,16 @@
 ---
+- name: Verification si une configuration existe
+  stat:
+    path: '/etc/mysql/conf.d/galera.cnf'
+  register: check_galeracnf
+
 - name: Copy Galera bootstrap configuration file
   template:
     src: roles/galera/templates/galera_replica.cnf
     dest: /etc/mysql/conf.d/galera.cnf
   register: galeracnf
+  when: check_galeracnf.stat.exists == False
+
 - name: Restart mariadb
   systemd:
     name: mariadb.service
