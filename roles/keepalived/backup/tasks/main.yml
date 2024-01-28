@@ -5,7 +5,7 @@
     state: latest
 - name: Copy keepalived backup configuration
   template:
-    src: roles/keepalived/templates/keepalived_backup.conf
+    src: roles/keepalived/templates/backup.cfg
     dest: /etc/keepalived/keepalived.conf
 - name: restart keepalived
   systemd:

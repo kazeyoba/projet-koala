@@ -5,7 +5,7 @@
     state: latest
 - name: Copy keepalived master configuration
   template:
-    src: roles/keepalived/templates/keepalived_master.conf
+    src: roles/keepalived/templates/master.cfg
     dest: /etc/keepalived/keepalived.conf
 - name: restart keepalived
   systemd:
