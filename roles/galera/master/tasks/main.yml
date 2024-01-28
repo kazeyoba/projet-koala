@@ -1,0 +1,11 @@
+---
+- name: Copy Galera bootstrap configuration file
+  template:
+    src: roles/galera/templates/galera_master.cnf
+    dest: /etc/mysql/conf.d/galera.cnf
+  register: galeracnf
+- name: Restart mariadb
+  systemd:
+    name: mariadb.service
+    state: restarted
+  when: galeracnf.changed

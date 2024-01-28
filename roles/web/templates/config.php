@@ -76,7 +76,7 @@ define('DB_USERNAME', 'kanboard');
 define('DB_PASSWORD', 'kanboard');
 
 // Database hostname
-define('DB_HOSTNAME', '10.10.61.101');
+define('DB_HOSTNAME', '10.10.60.103');
 
 // Database database name
 define('DB_NAME', 'kanboard');
