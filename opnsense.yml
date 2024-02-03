@@ -14,7 +14,7 @@
       target: 'source_nat'
 
   tasks:
-    - name: Ajouter une règle NAT
+    - name: Ajouter une règle NAT Grafana
       ansibleguy.opnsense.source_nat:
         description: 'grafana'
         match_fields: ['description']
@@ -29,6 +29,25 @@
         destination_port: '3000'
         target: '10.10.60.10'
         target_port: '3000'
+        log: true
+        state: 'present'
+        enabled: true
+
+    - name: Ajouter une règle NAT Kanboard
+      ansibleguy.opnsense.source_nat:
+        description: 'kanboard'
+        match_fields: ['description']
+        interface: 'wan'
+        ip_protocol: 'inet'
+        protocol: 'TCP'
+        source_invert: false
+        source_net: '192.168.0.252'
+        source_port: '80'
+        destination_invert: false
+        destination_net: '10.10.60.103'
+        destination_port: '80'
+        target: '10.10.60.103'
+        target_port: '80'
         log: true
         state: 'present'
         enabled: true
