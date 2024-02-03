@@ -3,7 +3,7 @@
   gather_facts: no
   module_defaults:
     group/ansibleguy.opnsense.all:
-      firewall: 'opnsense.template.ansibleguy.net'
+      firewall: '10.10.61.254'
       api_credential_file: './secret/opnsenseapikey.txt'
       ssl_verify: false
 
