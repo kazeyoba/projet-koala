@@ -17,7 +17,7 @@
     - name: Ajouter une règle NAT
       ansibleguy.opnsense.source_nat:
         description: 'NAT Grafana'
-        match_fields: ['grafana']
+        match_fields: ['description']
         interface: 'wan'
         ip_protocol: 'inet'
         protocol: 'TCP'
