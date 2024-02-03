@@ -14,18 +14,11 @@
       target: 'source_nat'
 
   tasks:
-    - name: Add NAT rule for Grafana
-      ansibleguy.opnsense.source_nat:
-        description: "Grafana"
-        source: '0.0.0.0/24'
-        destination: '192.168.0.252'
-        opt: 'wan'
-
     - name: Ajouter une règle NAT
       ansibleguy.opnsense.source_nat:
         description: 'NAT Grafana'
         match_fields: ['description']
-        interface: 'WAN'
+        interface: 'wan'
         ip_protocol: 'inet'
         protocol: 'TCP'
         source_invert: false
