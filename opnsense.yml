@@ -1,4 +1,5 @@
 - hosts: opnsense
+  connection: local
   gather_facts: no
   module_defaults:
     group/ansibleguy.opnsense.all:
