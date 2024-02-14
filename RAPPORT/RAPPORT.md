@@ -20,3 +20,4 @@
 
 ### Serveur NFS
 
+![Texte alternatif](schema-architecture-koala.png)
