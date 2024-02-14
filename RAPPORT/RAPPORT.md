@@ -1,12 +1,16 @@
 # Titre
 
+## Architecture Réseau
+
+![Texte alternatif](schema-architecture-koala.png)
+
 ## Démonstration
 
 ### Execution playbook ansible
 
 [Execution playbook ansible](https://www.youtube.com/watch?v=kEErIgz4k6g)
 
-### MariaDB Galera
+### MariaDB Galera 
 
 [Creation BDD + Replication](https://youtu.be/mSk_c7yrza4)
 
@@ -20,4 +24,3 @@
 
 ### Serveur NFS
 
-![Texte alternatif](schema-architecture-koala.png)
