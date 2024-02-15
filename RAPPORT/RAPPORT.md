@@ -1,6 +1,20 @@
 # Titre
 
+# Plan d'adressage
+
+Dans un premier temps, nous avons réalisé un plan d’adressage de manière à créer deux sous-réseau pour le VLAN front et back.
+
+| Nom            | VLAN Front    | VLAN Back     |
+| -------------- | ------------  | --------------|
+| IP sous réseau | 10.10.60.0    | 10.10.61.0    |
+| Masque         | 255.255.255.0 | 255.255.255.0 |
+| Passerelle     | 10.10.60.254  | 10.10.61.254  |
+| Broadcast      | 10.10.60.255  | 10.10.61.255  |
+
+
 ## Architecture Réseau
+
+Maintenant que nous avons le plan d’adressage, il nous est désormais possible de réaliser la modélisation de l’architecture.
 
 ![Texte alternatif](schema-architecture-koala.png)
 
