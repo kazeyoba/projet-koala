@@ -53,3 +53,13 @@ Puis dans le back, on retrouve :
 
 ### Serveur NFS
 
+## Tableau de bord Grafana 
+
+![grafana5](https://github.com/kazeyoba/projet-koala/assets/64216801/0fb10889-0c25-45be-ad1d-a523fe897c54)
+
+### Expression loki(LogQL) utiliser
+
+*
+*
+*
+*
