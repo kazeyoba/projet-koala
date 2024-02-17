@@ -114,22 +114,22 @@ scrape_configs:
 
         ## Explications :
 
-        # Serveur :
+        ### Serveur :
 
         http_listen_port : C'est le port sur lequel Promtail va écouter pour le trafic HTTP.
         grpc_listen_port : C'est pour le gRPC, mais ici c'est mis à zéro donc on ne l'utilise pas.
 
-        # Configuration du client :
+        ### Configuration du client :
         Url : C'est l'adresse de notre instance Loki où Promtail va envoyer les logs.
 
-        # Configurations de récupération (scraping) :
+        ### Configurations de récupération (scraping) :
         job_name : On donne un nom à notre job pour pouvoir le repérer plus facilement.
         static_configs : Ici, on définit des cibles statiques pour notre job, avec des labels spécifiques.
         journal : Ça c'est pour récupérer les logs du journal de systemd.
         path : Le chemin vers les fichiers de log qu'on veut récupérer.
         relabel_configs : Ça nous permet de modifier les labels des logs dynamiquement.
 
-        # Étapes de traitement (pipeline stages) :
+        ### Étapes de traitement (pipeline stages) :
         match : Cette étape filtre les logs en utilisant le sélecteur fourni.
         regex : On utilise des expressions régulières pour extraire des champs spécifiques des logs.
         labels : Les champs extraits sont transformés en labels pour le flux de logs.
