@@ -65,7 +65,7 @@ Puis dans le back, on retrouve :
 * Une statistique sur les codes de retour HTTP  -> Apache-00 -> sum by (response_code) (count_over_time({job="apache", host="web-00.koala-60.cloud"}[1m])) -> Apache-01 -> sum by (response_code) (count_over_time({job="apache", host="web-01.koala-60.cloud"}[1m]))
 * Une statistique sur les URLs les plus visitées -> Apache-00 -> topk(10, sum by(request_path) (count_over_time({job="apache", host="web-00.koala-60.cloud"}[24h]))) Apache 01 -> topk(10, sum by(request_path) (count_over_time({job="apache", host="web-01.koala-60.cloud"}[24h])))
 
-### Configuration YAML d'un des Promtail sur le serveur Apache-00 :
+### Configuration YAML Promtail sur le serveur Apache-00 (C'est le même sur Apache-01) :
 
 server:
   http_listen_port: 9080
@@ -138,5 +138,8 @@ scrape_configs:
         Cette configuration nous permet de faire des requêtes sur nos logs dans Loki en utilisant ces labels, ce qui facilite grandement le filtrage et la recherche dans nos données de logs. Par exemple, on peut chercher tous les logs qui ont un code de réponse spécifique, ou voir toutes les requêtes faites par une certaine IP client.
 
         
+        ## Commande pour generer les logs avec Apachex
 
+        
+        ### ab -n 60 -c 30 http://10.10.60.20/
 
