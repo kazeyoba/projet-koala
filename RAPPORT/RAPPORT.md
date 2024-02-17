@@ -138,8 +138,14 @@ scrape_configs:
         Cette configuration nous permet de faire des requêtes sur nos logs dans Loki en utilisant ces labels, ce qui facilite grandement le filtrage et la recherche dans nos données de logs. Par exemple, on peut chercher tous les logs qui ont un code de réponse spécifique, ou voir toutes les requêtes faites par une certaine IP client.
 
         
-        ## Commande pour generer les logs avec Apachex
+        ## Commande pour generer les logs avec ApacheBench:
+   
+        ### c'est un outil de test de charge pour les serveurs web connu sous le nom d'ApacheBench. Il est utilisé pour effectuer des tests de performance sur des serveurs HTTP.
 
-        
         ### ab -n 60 -c 30 http://10.10.60.20/
+
+          ab : C'est le programme ApacheBench lui-même.
+          -n 60 : Cela indique à ApacheBench de faire un total de 60 requêtes HTTP pendant le test.
+          -c 30 : Cela définit la concurrence à 30, ce qui signifie que ApacheBench va essayer de faire 30 requêtes en parallèle (simultanément) jusqu'à ce que le total de 60 requêtes soit atteint.
+          http://10.10.60.20/ : C'est l'URL cible du test de charge. Ici c'est notre Apache-00.
 
