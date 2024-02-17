@@ -59,7 +59,9 @@ Puis dans le back, on retrouve :
 
 ### Expression loki(LogQL) utiliser
 
-*
-*
-*
-*
+*{job="apache"}
+* Le nombre de requêtes effectuées par IP -> Apache-00 -> sum by (client_ip) (count_over_time({job="apache", host="web-00.koala-60.cloud"}[1m])) -> Apache-01 -> sum by (client_ip) (count_over_time({job="apache", host="web-01.koala-60.cloud"}[1m]))
+* Une statistique sur les codes de retour HTTP  -> count_over_time({job="apache"} |= '404' [$__auto]) -> le camenbert qui remonte le % de code reponse http 404 sur les 2 apaches | Vert web-00 | Jaune web-01.
+* Une statistique sur les codes de retour HTTP  -> Apache-00 -> sum by (response_code) (count_over_time({job="apache", host="web-00.koala-60.cloud"}[1m])) -> Apache-01 -> sum by (response_code) (count_over_time({job="apache", host="web-01.koala-60.cloud"}[1m]))
+* Une statistique sur les URLs les plus visitées -> Apache-00 -> topk(10, sum by(request_path) (count_over_time({job="apache", host="web-00.koala-60.cloud"}[24h]))) Apache 01 -> topk(10, sum by(request_path) (count_over_time({job="apache", host="web-01.koala-60.cloud"}[24h])))
+
