@@ -119,8 +119,7 @@ scrape_configs:
         http_listen_port : C'est le port sur lequel Promtail va écouter pour le trafic HTTP.
         grpc_listen_port : C'est pour le gRPC, mais ici c'est mis à zéro donc on ne l'utilise pas.
         Configuration du client :
-
-        url : C'est l'adresse de notre instance Loki où Promtail va envoyer les logs.
+        Url : C'est l'adresse de notre instance Loki où Promtail va envoyer les logs.
         Configurations de récupération (scraping) :
 
         job_name : On donne un nom à notre job pour pouvoir le repérer plus facilement.
