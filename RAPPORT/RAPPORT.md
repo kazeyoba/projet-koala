@@ -1,6 +1,6 @@
-# Titre
+# Projet infrastructure ansible
 
-# Plan d'adressage
+## Plan d'adressage
 
 Dans un premier temps, nous avons réalisé un plan d’adressage de manière à créer deux sous-réseau pour le VLAN front et back.
 
@@ -10,7 +10,6 @@ Dans un premier temps, nous avons réalisé un plan d’adressage de manière à
 | Masque         | 255.255.255.0 | 255.255.255.0 |
 | Passerelle     | 10.10.60.254  | 10.10.61.254  |
 | Broadcast      | 10.10.60.255  | 10.10.61.255  |
-
 
 ## Architecture Réseau
 
@@ -32,6 +31,208 @@ Puis dans le back, on retrouve :
 * 2 serveurs de bases de données, mariadb
 * 1 serveur loki pour l''agrégation et à l'analyse des journaux
 * 1 serveur NFS sur lequel on retrouve la configuration de kanboard
+
+## Playbooks
+
+### All
+
+```shell
+---
+- name: Add my ssh key
+  authorized_key:
+    user: cloud
+    state: present
+    key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCl9XR5SgQXbK6kzbe53HVvxCw4c26hWsxC28kzGpMewSCPE64TUVa2UyXcgdiNQOHYuyCBSllk0sblp+iPKpf4t2vvzilS0nowoCU6XWqanLiakGjUgro0xjwdAMWNaIARKnOl4QoIuWLxs0duGhK+z63AQMi33QuG8VbCV2vD5KRhunsM2bN3MK1H6IpeBeteScMxnvk5EasG7VTesCIzsbYqj5RWJ+7MJEHonOUm798/5lHblHPG7+dVTJm06OrjleL0TQZSxhkIy7V7Ho28JHqDaZsZKwyVNUtdaVhOxBHMUjwnDQ4gJAA98pIoFZDuBe31SoXkeb21Hi9Q8GnB cloud@bastion-ans"
+
+- name: Configure SSHd disable PasswordAuthentication
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^#PasswordAuthentication yes"
+    line: "PasswordAuthentication no"
+
+- name: Vérifier si la ligne existe déjà dans le fichier sudoers
+  shell: "grep -q 'cloud ALL=(ALL) NOPASSWD:ALL' /etc/sudoers"
+  ignore_errors: yes
+  register: grep_result
+
+- name: Ajouter la ligne au fichier sudoers si elle n'existe pas
+  lineinfile:
+    path: /etc/sudoers
+    line: 'cloud ALL=(ALL) NOPASSWD:ALL'
+  when: grep_result.rc != 0
+
+- name: restart SSHD
+  command: systemctl restart sshd
+```
+
+### Keepalived
+### Proxy
+### Base de données
+#### Galera
+### Web
+
+```shell
+---
+- name: Install apache2 and php dependencies
+  apt:
+    update_cache: yes
+    pkg:
+      - apache2
+      - libapache2-mod-php8.2
+      - php8.2
+      - php8.2-mysql
+      - php8.2-gd
+      - php8.2-mbstring
+      - php8.2-imagick
+      - php8.2-xml
+      - nfs-common
+    state: latest
+
+- name: Restart apache2
+  systemd:
+    name: apache2.service
+    state: restarted
+
+- name: Add /var/www/nfs path
+  file:
+    path: /var/www/nfs
+    state: directory
+    mode: '0755'
+    owner: www-data
+    group: www-data
+
+- name: Add nfs mount
+  lineinfile:
+    path: /etc/fstab
+    regexp: '^.*/srv/nfs.*$'
+    line: '10.10.61.20:/srv/nfs /var/www/nfs nfs noatime,nodiratime 0 0'
+    state: present
+
+- name: Mount nfs share
+  command: mount -a
+
+- name: Chown export to www-data:www-data
+  command: chown -R www-data:www-data /var/www/nfs
+
+- name: Check if default vhost is disable
+  stat:
+    path: '/etc/apache2/sites-enabled/000-default.conf'
+  register: check_defaultvhost
+
+- name: Disable default apache2 site
+  command: a2dissite 000-default
+  when: check_defaultvhost.stat.exists == True
+
+- name: Check if kanboard vhost exist
+  stat:
+    path: '/etc/apache2/sites-available/kanboard.conf'
+  register: check_vhostkanboard
+
+- name: Copy vhost
+  template:
+    src: roles/web/templates/kanboard.conf
+    dest: /etc/apache2/sites-available/kanboard.conf
+  when: check_vhostkanboard.stat.exists == False
+
+- name: Check if kanboard vhost link exists
+  stat:
+    path: '/etc/apache2/sites-enabled/kanboard.conf'
+  register: check_linkkanboard
+
+- name: Enable kanboard apache2 site
+  command: a2ensite kanboard
+  when: check_linkkanboard.stat.exists == False
+
+- name: Check if kanboard config.php exists
+  stat:
+    path: '/var/www/nfs/kanboard-1.2.34/config.php'
+  register: check_configkanboard
+
+- name: Copy config.php
+  template:
+    src: roles/web/templates/config.php
+    dest: /var/www/nfs/kanboard-1.2.34/config.php
+  when: check_configkanboard.stat.exists == False
+
+- name: Restart apache2
+  systemd:
+    name: apache2.service
+    state: restarted
+  when: check_linkkanboard.stat.exists == False
+```
+### NFS
+
+```shell
+---
+- name: Install nfs server and LVM packages
+  apt:
+    update_cache: yes
+    pkg:
+      - nfs-kernel-server
+      - lvm2
+    state: latest
+
+- name: Check if /dev/sdb is initialized
+  command: pvdisplay /dev/sdb
+  register: pvdisplay_output
+  ignore_errors: yes
+
+- name: Create physical volume
+  command: pvcreate /dev/sdb
+  when: "pvdisplay_output.rc != 0"
+
+- name: Create volume group
+  command: vgcreate vg_nfs /dev/sdb
+  when: "pvdisplay_output.rc != 0"
+
+- name: Create logical volume
+  command: lvcreate -l 100%FREE -n lv_nfs vg_nfs
+  when: "pvdisplay_output.rc != 0"
+
+- name: Create filesystem on logical volume
+  filesystem:
+    fstype: ext4
+    dev: /dev/vg_nfs/lv_nfs
+  when: "pvdisplay_output.rc != 0"
+
+- name: Create directory /srv/nfs
+  file:
+    path: /srv/nfs
+    state: directory
+    mode: '0755'
+  when: "pvdisplay_output.rc != 0"
+
+- name: Mount logical volume in /srv/nfs
+  mount:
+    path: /srv/nfs
+    src: /dev/vg_nfs/lv_nfs
+    fstype: ext4
+    state: mounted
+
+- name: Export directory to subnet front / back
+  lineinfile:
+    path: /etc/exports
+    regex: '^/srv/nfs.*$'
+    line: '/srv/nfs 10.10.60.0/24(rw,sync,no_subtree_check,no_root_squash,anonuid=33,anongid=33)'
+
+- name: Export filesystems
+  command: exportfs -a
+
+- name: Check Kanboard directory existence
+  stat:
+    path: /srv/nfs/kanboard
+  register: kanboardinstall
+
+- name: Download Kanboard archive
+  unarchive:
+    src: https://github.com/kanboard/kanboard/archive/refs/tags/v1.2.34.tar.gz
+    dest: /srv/nfs/
+    remote_src: yes
+  when: not kanboardinstall.stat.exists
+```
+### Loki
+### Promtail
+### Grafana
 
 ## Démonstration
 
