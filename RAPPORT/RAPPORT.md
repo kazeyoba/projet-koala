@@ -36,7 +36,9 @@ Puis dans le back, on retrouve :
 
 ### All
 
-```shell
+Pour l'ensemble des machines de notre réseau, nous avons configuré ssh de manière à pouvoir si connecté à distance : 
+
+```yml
 ---
 - name: Add my ssh key
   authorized_key:
@@ -139,6 +141,7 @@ Il y a une différence entre la configuration du backup et master par le STATE e
 Pour rendre nos BDD & serveur WEB en haute disponibilité on utilise HAProxy pour loadbalancer. On expose nos services en utilisant l'IP Failover.
 
 Voici la configuration:
+
 ```conf
 frontend B3-front
 	bind 10.10.60.103:80
@@ -263,7 +266,9 @@ Pour le backup:
 
 ### Web
 
-```shell
+Ce rôle configure notre serveur web. Pour cela, on installe les packages requis, puis on récupère la configuration de Kanboard depuis notre serveur NFS. La configuration du vhost est ensuite réalisée, incluant la désactivation du site par défaut d'Apache (`000-default.conf`) s'il est activé, suivi de la copie de la configuration du site Kanboard (`kanboard.conf`). Enfin, le playbook vérifie la présence du fichier de configuration de Kanboard (`config.php`) et le duplique s'il n'est pas déjà présent.
+
+```yml
 ---
 - name: Install apache2 and php dependencies
   apt:
@@ -354,7 +359,9 @@ Pour le backup:
 ```
 ### NFS
 
-```shell
+Ce playbook a pour objectif de configurer un serveur NFS avec des volumes logiques. Il installe les paquets nécessaires, vérifie si le volume `/dev/sdb` est initialisé, et crée le volume physique, le groupe de volumes, et le volume logique si nécessaire. Il crée ensuite un système de fichiers, monte le volume dans `/srv/nfs`, exporte le répertoire à un sous-réseau spécifique, et vérifie l'existence du répertoire Kanboard avant de le télécharger si nécessaire.
+
+```yml
 ---
 - name: Install nfs server and LVM packages
   apt:
