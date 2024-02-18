@@ -430,7 +430,7 @@ Ce playbook a pour objectif de configurer un serveur NFS avec des volumes logiqu
   when: not kanboardinstall.stat.exists
 ```
 ### Loki
-
+On a choisi les solutions Grafana, Loki, et Promtail car elles ont été créées par Grafana Labs. Ensemble, elles sont plus optimisées.
 La stack "Graylog" est beacoup trop lourde à maintenir et à utiliser + configurer. On part sur de la simplicité avec Loki + Grafana. Il suffit juste d'installer le binaire.
 
 ```yml
